@@ -209,10 +209,6 @@
   </header>
 
   <main>
-    <div class="controls">
-      <input id="filter" type="search" placeholder="Filtrar por tag, nombre, fecha o changelog..." autofocus>
-      <span class="count" id="count"></span>
-    </div>
     <div id="releases">
       <div class="loading">Cargando releases…</div>
     </div>
@@ -228,9 +224,6 @@
     const REPO = 'Diseno-Informatico-LLC/Magnum-Builds';
     const API = `https://api.github.com/repos/${REPO}/releases?per_page=100`;
     const $releases = document.getElementById('releases');
-    const $filter = document.getElementById('filter');
-    const $count = document.getElementById('count');
-    let allReleases = [];
 
     marked.setOptions({ gfm: true, breaks: true });
 
@@ -258,13 +251,11 @@
 
     function render(list) {
       if (!list.length) {
-        $releases.innerHTML = '<div class="empty">No hay releases que coincidan.</div>';
-        $count.textContent = '';
+        $releases.innerHTML = '<div class="empty">No hay releases publicadas todavía.</div>';
         return;
       }
-      $count.textContent = `${list.length} release${list.length === 1 ? '' : 's'}`;
       $releases.innerHTML = list.map((r, i) => {
-        const isLatest = i === 0 && list === allReleases;
+        const isLatest = i === 0;
         const assets = (r.assets || []).map(a =>
           `<a class="asset" href="${a.browser_download_url}" download>
             ⬇ ${escape(a.name)}
@@ -287,32 +278,15 @@
       }).join('');
     }
 
-    function applyFilter() {
-      const q = $filter.value.toLowerCase().trim();
-      if (!q) return render(allReleases);
-      const filtered = allReleases.filter(r =>
-        (r.tag_name || '').toLowerCase().includes(q) ||
-        (r.name || '').toLowerCase().includes(q) ||
-        (r.body || '').toLowerCase().includes(q) ||
-        fmtDate(r.published_at).toLowerCase().includes(q)
-      );
-      render(filtered);
-    }
-
     fetch(API)
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
-      .then(data => {
-        allReleases = data;
-        render(allReleases);
-      })
+      .then(data => render(data))
       .catch(err => {
         $releases.innerHTML = `<div class="error">Error cargando releases: ${escape(err.message)}<br><small>Si el repo es privado, la API requiere autenticación.</small></div>`;
       });
-
-    $filter.addEventListener('input', applyFilter);
   </script>
 </body>
 </html>
