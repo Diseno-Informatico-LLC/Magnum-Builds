@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Magnum API — Builds</title>
+  <title>Magnum — Software de gestión ERP</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%A6%3C/text%3E%3C/svg%3E">
   <style>
     :root {
@@ -27,19 +27,23 @@
       line-height: 1.5;
     }
     header {
-      padding: 2rem 1.5rem;
+      padding: 2.5rem 1.5rem;
       border-bottom: 1px solid var(--border);
       background: var(--panel);
+      text-align: center;
     }
     header h1 {
-      margin: 0 0 .25rem;
-      font-size: 1.75rem;
+      margin: 0 0 .5rem;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
     }
-    header p {
-      margin: 0;
-      color: var(--muted);
-      font-size: .95rem;
+    header .site-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 1rem;
     }
+    header .site-link:hover { text-decoration: underline; }
     main {
       max-width: 920px;
       margin: 2rem auto;
@@ -111,14 +115,43 @@
     .body {
       color: var(--text);
       font-size: .9rem;
-      white-space: pre-wrap;
       background: rgba(255,255,255,.02);
       padding: .75rem 1rem;
       border-radius: 6px;
       border-left: 3px solid var(--accent);
       margin-bottom: 1rem;
+      overflow-x: auto;
     }
     .body:empty { display: none; }
+    .body p { margin: .5rem 0; }
+    .body h1, .body h2, .body h3, .body h4 {
+      margin: 1rem 0 .5rem;
+      font-weight: 600;
+    }
+    .body h1 { font-size: 1.1rem; }
+    .body h2 { font-size: 1.05rem; color: var(--accent); }
+    .body h3 { font-size: .95rem; color: var(--accent); }
+    .body h4 { font-size: .9rem; }
+    .body ul, .body ol { padding-left: 1.5rem; margin: .5rem 0; }
+    .body li { margin: .15rem 0; }
+    .body a { color: var(--accent); text-decoration: none; }
+    .body a:hover { text-decoration: underline; }
+    .body code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: .85em;
+      background: rgba(110,118,129,.25);
+      padding: .1em .35em;
+      border-radius: 4px;
+    }
+    .body pre {
+      background: rgba(0,0,0,.35);
+      padding: .75rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .body pre code { background: none; padding: 0; }
+    .body strong { color: #e6edf3; }
+    .body hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
     .assets {
       display: flex;
       flex-wrap: wrap;
@@ -171,13 +204,13 @@
 </head>
 <body>
   <header>
-    <h1>Magnum API — Builds</h1>
-    <p>Builds automatizados con .NET Reactor. Generados desde <a href="https://github.com/Diseno-Informatico-LLC/Magnum-Api" style="color:var(--accent)">Magnum-Api</a> en cada push a master y los lunes 9:00 AR.</p>
+    <h1>Magnum, Software de gestión ERP</h1>
+    <a class="site-link" href="https://www.gestionmagnum.com.ar" target="_blank" rel="noopener">www.gestionmagnum.com.ar</a>
   </header>
 
   <main>
     <div class="controls">
-      <input id="filter" type="search" placeholder="Filtrar por tag, nombre o fecha..." autofocus>
+      <input id="filter" type="search" placeholder="Filtrar por tag, nombre, fecha o changelog..." autofocus>
       <span class="count" id="count"></span>
     </div>
     <div id="releases">
@@ -189,6 +222,8 @@
     <p>Powered by GitHub Releases · <a href="https://github.com/Diseno-Informatico-LLC/Magnum-Builds/releases">Ver en GitHub</a></p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
   <script>
     const REPO = 'Diseno-Informatico-LLC/Magnum-Builds';
     const API = `https://api.github.com/repos/${REPO}/releases?per_page=100`;
@@ -196,6 +231,8 @@
     const $filter = document.getElementById('filter');
     const $count = document.getElementById('count');
     let allReleases = [];
+
+    marked.setOptions({ gfm: true, breaks: true });
 
     function fmtDate(iso) {
       const d = new Date(iso);
@@ -213,6 +250,12 @@
       return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
     }
 
+    function renderMarkdown(md) {
+      if (!md) return '';
+      const html = marked.parse(md);
+      return DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
+    }
+
     function render(list) {
       if (!list.length) {
         $releases.innerHTML = '<div class="empty">No hay releases que coincidan.</div>';
@@ -228,7 +271,7 @@
             <span class="size">${fmtSize(a.size)}</span>
           </a>`
         ).join('');
-        const body = r.body ? `<div class="body">${escape(r.body)}</div>` : '';
+        const body = r.body ? `<div class="body">${renderMarkdown(r.body)}</div>` : '';
         return `
           <article class="release">
             <div class="release-header">
