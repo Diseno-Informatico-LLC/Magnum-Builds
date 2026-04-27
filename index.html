@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magnum API — Builds</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%A6%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --tag-bg: #1f6feb1a;
+      --tag-fg: #58a6ff;
+      --green: #238636;
+      --green-hover: #2ea043;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+    }
+    header h1 {
+      margin: 0 0 .25rem;
+      font-size: 1.75rem;
+    }
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    main {
+      max-width: 920px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    .controls {
+      display: flex;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .controls input {
+      flex: 1;
+      min-width: 200px;
+      padding: .5rem .75rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: .95rem;
+    }
+    .controls input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .controls .count {
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    .release {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .release-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: .75rem;
+    }
+    .release h2 {
+      margin: 0 0 .25rem;
+      font-size: 1.1rem;
+    }
+    .release h2 a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .release h2 a:hover { color: var(--accent); }
+    .tag {
+      display: inline-block;
+      padding: .15rem .5rem;
+      background: var(--tag-bg);
+      color: var(--tag-fg);
+      border-radius: 99px;
+      font-size: .75rem;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-bottom: .75rem;
+    }
+    .body {
+      color: var(--text);
+      font-size: .9rem;
+      white-space: pre-wrap;
+      background: rgba(255,255,255,.02);
+      padding: .75rem 1rem;
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+      margin-bottom: 1rem;
+    }
+    .body:empty { display: none; }
+    .assets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .asset {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .4rem .8rem;
+      background: var(--green);
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: .85rem;
+      transition: background .15s;
+    }
+    .asset:hover { background: var(--green-hover); }
+    .asset .size {
+      font-size: .75rem;
+      opacity: .85;
+    }
+    .empty, .loading, .error {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--muted);
+    }
+    .error { color: #f85149; }
+    .latest-badge {
+      background: #ffd33d33;
+      color: #ffd33d;
+      padding: .15rem .45rem;
+      border-radius: 99px;
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-left: .5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      color: var(--muted);
+      font-size: .8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Magnum API — Builds</h1>
+    <p>Builds automatizados con .NET Reactor. Generados desde <a href="https://github.com/Diseno-Informatico-LLC/Magnum-Api" style="color:var(--accent)">Magnum-Api</a> en cada push a master y los lunes 9:00 AR.</p>
+  </header>
+
+  <main>
+    <div class="controls">
+      <input id="filter" type="search" placeholder="Filtrar por tag, nombre o fecha..." autofocus>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="releases">
+      <div class="loading">Cargando releases…</div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Powered by GitHub Releases · <a href="https://github.com/Diseno-Informatico-LLC/Magnum-Builds/releases">Ver en GitHub</a></p>
+  </footer>
+
+  <script>
+    const REPO = 'Diseno-Informatico-LLC/Magnum-Builds';
+    const API = `https://api.github.com/repos/${REPO}/releases?per_page=100`;
+    const $releases = document.getElementById('releases');
+    const $filter = document.getElementById('filter');
+    const $count = document.getElementById('count');
+    let allReleases = [];
+
+    function fmtDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    function fmtSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024**2) return (bytes/1024).toFixed(1) + ' KB';
+      if (bytes < 1024**3) return (bytes/1024/1024).toFixed(1) + ' MB';
+      return (bytes/1024/1024/1024).toFixed(2) + ' GB';
+    }
+
+    function escape(s) {
+      return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+
+    function render(list) {
+      if (!list.length) {
+        $releases.innerHTML = '<div class="empty">No hay releases que coincidan.</div>';
+        $count.textContent = '';
+        return;
+      }
+      $count.textContent = `${list.length} release${list.length === 1 ? '' : 's'}`;
+      $releases.innerHTML = list.map((r, i) => {
+        const isLatest = i === 0 && list === allReleases;
+        const assets = (r.assets || []).map(a =>
+          `<a class="asset" href="${a.browser_download_url}" download>
+            ⬇ ${escape(a.name)}
+            <span class="size">${fmtSize(a.size)}</span>
+          </a>`
+        ).join('');
+        const body = r.body ? `<div class="body">${escape(r.body)}</div>` : '';
+        return `
+          <article class="release">
+            <div class="release-header">
+              <div>
+                <h2><a href="${r.html_url}">${escape(r.name || r.tag_name)}</a>${isLatest ? '<span class="latest-badge">Latest</span>' : ''}</h2>
+                <span class="tag">${escape(r.tag_name)}</span>
+              </div>
+              <div class="meta">${fmtDate(r.published_at)}</div>
+            </div>
+            ${body}
+            <div class="assets">${assets || '<span class="meta">Sin archivos adjuntos.</span>'}</div>
+          </article>`;
+      }).join('');
+    }
+
+    function applyFilter() {
+      const q = $filter.value.toLowerCase().trim();
+      if (!q) return render(allReleases);
+      const filtered = allReleases.filter(r =>
+        (r.tag_name || '').toLowerCase().includes(q) ||
+        (r.name || '').toLowerCase().includes(q) ||
+        (r.body || '').toLowerCase().includes(q) ||
+        fmtDate(r.published_at).toLowerCase().includes(q)
+      );
+      render(filtered);
+    }
+
+    fetch(API)
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        allReleases = data;
+        render(allReleases);
+      })
+      .catch(err => {
+        $releases.innerHTML = `<div class="error">Error cargando releases: ${escape(err.message)}<br><small>Si el repo es privado, la API requiere autenticación.</small></div>`;
+      });
+
+    $filter.addEventListener('input', applyFilter);
+  </script>
+</body>
+</html>
