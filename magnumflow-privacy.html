@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MagnumFlow — Política de Privacidad</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%A6%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      padding: 2.5rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      text-align: center;
+    }
+    header h1 {
+      margin: 0 0 .5rem;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -.02em;
+    }
+    header .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1.5rem 4rem;
+    }
+    h2 {
+      color: var(--accent);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 2.5rem;
+      margin-bottom: .75rem;
+      padding-bottom: .35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: .5rem;
+    }
+    p, li { color: var(--text); }
+    ul { padding-left: 1.25rem; }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    code {
+      background: var(--panel);
+      padding: .15rem .4rem;
+      border-radius: 4px;
+      font-size: .9em;
+      color: var(--accent);
+    }
+    .updated {
+      color: var(--muted);
+      font-size: .9rem;
+      margin-top: 1rem;
+    }
+    footer {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .85rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MagnumFlow — Política de Privacidad</h1>
+    <div class="subtitle">Aplicación móvil del sistema de gestión Magnum ERP</div>
+    <div class="updated">Última actualización: 30 de abril de 2026</div>
+  </header>
+
+  <main>
+    <h2>1. Identidad del responsable</h2>
+    <p>
+      <strong>MagnumFlow</strong> es desarrollada y distribuida por <strong>Diseño Informático</strong>,
+      empresa proveedora del sistema de gestión Magnum ERP.
+    </p>
+    <p>
+      Contacto: <a href="mailto:mauricio@gestionmagnum.com.ar">mauricio@gestionmagnum.com.ar</a>
+    </p>
+
+    <h2>2. Naturaleza de la aplicación</h2>
+    <p>
+      MagnumFlow es una herramienta de uso interno para clientes que ya operan el sistema Magnum ERP.
+      Se conecta exclusivamente al servidor del propio cliente (instalación on-premise o privada). No se
+      ofrece como servicio multitenancy ni se almacenan datos en servidores controlados por nosotros.
+    </p>
+
+    <h2>3. Datos que la aplicación procesa</h2>
+
+    <h3>3.1. Credenciales de acceso</h3>
+    <p>
+      Para poder conectarse al servidor de su empresa, la app guarda localmente, en almacenamiento
+      seguro del dispositivo (<code>Keystore</code> en Android, <code>Keychain</code> en iOS):
+    </p>
+    <ul>
+      <li>URL del servidor configurado por el usuario.</li>
+      <li>Nombre de usuario y token de sesión (JWT).</li>
+    </ul>
+    <p>Estos datos no se transmiten a terceros y se eliminan cuando el usuario cierra sesión.</p>
+
+    <h3>3.2. Datos de operación</h3>
+    <p>
+      La aplicación funciona con un modo <em>offline-first</em>: descarga catálogos (productos,
+      clientes, monedas, etc.) y permite registrar pedidos y otros comprobantes desde el dispositivo.
+      Esta información se almacena en una base de datos local cifrada y se sincroniza únicamente
+      con el servidor del cliente al recuperar conexión.
+    </p>
+
+    <h3>3.3. Imágenes capturadas (cámara)</h3>
+    <p>
+      MagnumFlow utiliza la cámara del dispositivo, con consentimiento explícito del usuario al
+      momento de la captura, para escanear comprobantes de compra (facturas, tickets) y adjuntarlos
+      a un movimiento del sistema. Las imágenes:
+    </p>
+    <ul>
+      <li>Se procesan localmente en el dispositivo.</li>
+      <li>Se transmiten exclusivamente al servidor Magnum del cliente al confirmar el alta.</li>
+      <li>No se envían a servicios de terceros, ni a Diseño Informático, ni se utilizan para
+          analítica, publicidad o entrenamiento de modelos.</li>
+    </ul>
+
+    <h2>4. Permisos solicitados</h2>
+    <ul>
+      <li><strong>Cámara</strong> (<code>android.permission.CAMERA</code>): para escanear y adjuntar
+          comprobantes. Solicitado en runtime, sólo cuando el usuario abre la pantalla de captura.</li>
+      <li><strong>Internet y estado de red</strong>: para sincronizar datos contra el servidor del
+          cliente y detectar conexión disponible.</li>
+    </ul>
+    <p>
+      La aplicación no solicita acceso a contactos, ubicación, micrófono, calendario, llamadas,
+      almacenamiento externo ni a otras fuentes de datos personales.
+    </p>
+
+    <h2>5. Almacenamiento y transmisión</h2>
+    <ul>
+      <li>Los datos sensibles (credenciales, token) se cifran con el almacenamiento seguro del
+          sistema operativo.</li>
+      <li>La sincronización se realiza por HTTPS contra el servidor configurado por el cliente. En
+          redes locales privadas el cliente puede optar por HTTP plano bajo su responsabilidad.</li>
+      <li>No utilizamos servicios de analítica de terceros (Google Analytics, Firebase Analytics,
+          Crashlytics, Facebook SDK, etc.).</li>
+      <li>No publicamos publicidad ni rastreamos usuarios entre aplicaciones.</li>
+    </ul>
+
+    <h2>6. Compartición con terceros</h2>
+    <p>
+      MagnumFlow <strong>no comparte</strong> datos personales ni operativos con terceros. Todos los
+      datos viajan únicamente entre la aplicación y el servidor Magnum del cliente.
+    </p>
+
+    <h2>7. Retención y eliminación</h2>
+    <p>
+      Los datos almacenados localmente en el dispositivo permanecen mientras la aplicación esté
+      instalada. El usuario puede eliminarlos en cualquier momento:
+    </p>
+    <ul>
+      <li>Cerrando sesión desde la app (limpia credenciales y caché local).</li>
+      <li>Desinstalando la aplicación (borra todo el almacenamiento asociado).</li>
+      <li>Solicitando al administrador del sistema Magnum la baja del usuario en el servidor.</li>
+    </ul>
+
+    <h2>8. Menores de edad</h2>
+    <p>
+      MagnumFlow es una herramienta corporativa pensada para uso de personal administrativo,
+      comercial y de depósito. No está dirigida a menores de 13 años y no recolecta datos de menores
+      de manera consciente.
+    </p>
+
+    <h2>9. Cambios en esta política</h2>
+    <p>
+      Cualquier cambio relevante se publicará en esta misma URL con la fecha de actualización
+      modificada. Si los cambios afectan al manejo de datos personales, los notificaremos dentro de
+      la propia aplicación.
+    </p>
+
+    <h2>10. Contacto</h2>
+    <p>
+      Para consultas sobre privacidad, ejercer derechos de acceso, rectificación o eliminación, o
+      reportar incidentes, escribir a:
+      <a href="mailto:mauricio@gestionmagnum.com.ar">mauricio@gestionmagnum.com.ar</a>.
+    </p>
+  </main>
+
+  <footer>
+    &copy; Diseño Informático — MagnumFlow.
+    <a href="./index.html">Volver a Magnum-Builds</a>
+  </footer>
+</body>
+</html>
