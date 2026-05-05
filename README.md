@@ -1,6 +1,6 @@
 # Magnum-Builds
 
-Repositorio de releases compiladas y obfuscadas de **Magnum API**.
+Repositorio de releases compiladas de **Magnum API**.
 
 - **Página de descarga**: https://diseno-informatico-llc.github.io/Magnum-Builds/
 - **Releases**: https://github.com/Diseno-Informatico-LLC/Magnum-Builds/releases
@@ -10,7 +10,6 @@ Repositorio de releases compiladas y obfuscadas de **Magnum API**.
 
 El workflow corre:
 - En cada push a `master`
-- Los lunes 09:00 AR (cron semanal)
 - A demanda (workflow_dispatch)
 
 Cada build exitoso publica una Release acá con tag `YYYY.MM.DD-buildN` y un ZIP con el output completo.
