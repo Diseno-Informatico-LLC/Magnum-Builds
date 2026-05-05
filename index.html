@@ -275,7 +275,18 @@
       return DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
     }
 
+    let releases = [];
+
+    function hydrate(details) {
+      const body = details.querySelector('.body[data-pending]');
+      if (!body) return;
+      const idx = +details.dataset.idx;
+      body.innerHTML = renderMarkdown(releases[idx].body);
+      body.removeAttribute('data-pending');
+    }
+
     function render(list) {
+      releases = list;
       if (!list.length) {
         $releases.innerHTML = '<div class="empty">No hay releases publicadas todavía.</div>';
         return;
@@ -288,9 +299,9 @@
             <span class="size">${fmtSize(a.size)}</span>
           </a>`
         ).join('');
-        const body = r.body ? `<div class="body">${renderMarkdown(r.body)}</div>` : '';
+        const body = r.body ? `<div class="body" data-pending="1"></div>` : '';
         return `
-          <details class="release"${isLatest ? ' open' : ''}>
+          <details class="release" data-idx="${i}"${isLatest ? ' open' : ''}>
             <summary>
               <div class="release-header">
                 <div>
@@ -308,6 +319,11 @@
             </div>
           </details>`;
       }).join('');
+
+      $releases.querySelectorAll('details.release').forEach(d => {
+        if (d.open) hydrate(d);
+        d.addEventListener('toggle', () => { if (d.open) hydrate(d); });
+      });
     }
 
     fetch(API)
