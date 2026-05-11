@@ -302,23 +302,28 @@
     }
 
     function render(list) {
-      releases = list;
       if (!list.length) {
         $releases.innerHTML = '<div class="empty">No hay releases publicadas todavía.</div>';
         return;
       }
 
-      // Latest se aplica al primero de cada tipo (API y Frontend son lineas paralelas).
-      const firstByType = {};
-      list.forEach((r, i) => {
+      // Mover el Latest de cada tipo al principio para que API y Frontend recientes
+      // queden adyacentes (la API de GitHub viene desc por published_at).
+      const seen = new Set();
+      const latests = [];
+      const rest = [];
+      list.forEach(r => {
         const t = tipoRelease(r);
-        if (firstByType[t] === undefined) firstByType[t] = i;
+        if (!seen.has(t)) { seen.add(t); latests.push(r); }
+        else { rest.push(r); }
       });
+      releases = [...latests, ...rest];
+      const latestCount = latests.length;
 
-      $releases.innerHTML = list.map((r, i) => {
+      $releases.innerHTML = releases.map((r, i) => {
         const tipo = tipoRelease(r);
         const tipoLabel = tipo === 'frontend' ? 'Frontend' : 'API';
-        const isLatest = firstByType[tipo] === i;
+        const isLatest = i < latestCount;
         const assets = (r.assets || []).map(a =>
           `<a class="asset" href="${a.browser_download_url}" download>
             ⬇ ${escape(a.name)}
