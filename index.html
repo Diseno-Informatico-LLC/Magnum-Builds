@@ -217,6 +217,18 @@
       letter-spacing: .04em;
       margin-left: .5rem;
     }
+    .type-badge {
+      display: inline-block;
+      padding: .15rem .45rem;
+      border-radius: 99px;
+      font-size: .7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-left: .5rem;
+    }
+    .type-badge.api { background: #1f6feb33; color: #58a6ff; }
+    .type-badge.frontend { background: #a371f733; color: #bc8cff; }
     footer {
       text-align: center;
       padding: 2rem 1.5rem;
@@ -285,14 +297,28 @@
       body.removeAttribute('data-pending');
     }
 
+    function tipoRelease(r) {
+      return (r.tag_name || '').toLowerCase().startsWith('frontend-') ? 'frontend' : 'api';
+    }
+
     function render(list) {
       releases = list;
       if (!list.length) {
         $releases.innerHTML = '<div class="empty">No hay releases publicadas todavía.</div>';
         return;
       }
+
+      // Latest se aplica al primero de cada tipo (API y Frontend son lineas paralelas).
+      const firstByType = {};
+      list.forEach((r, i) => {
+        const t = tipoRelease(r);
+        if (firstByType[t] === undefined) firstByType[t] = i;
+      });
+
       $releases.innerHTML = list.map((r, i) => {
-        const isLatest = i === 0;
+        const tipo = tipoRelease(r);
+        const tipoLabel = tipo === 'frontend' ? 'Frontend' : 'API';
+        const isLatest = firstByType[tipo] === i;
         const assets = (r.assets || []).map(a =>
           `<a class="asset" href="${a.browser_download_url}" download>
             ⬇ ${escape(a.name)}
@@ -306,7 +332,7 @@
               <div class="release-header">
                 <div>
                   <span class="chevron">▶</span>
-                  <h2>${escape(r.name || r.tag_name)}${isLatest ? '<span class="latest-badge">Latest</span>' : ''}</h2>
+                  <h2>${escape(r.name || r.tag_name)}<span class="type-badge ${tipo}">${tipoLabel}</span>${isLatest ? '<span class="latest-badge">Latest</span>' : ''}</h2>
                   <span class="tag">${escape(r.tag_name)}</span>
                 </div>
                 <div class="meta">${fmtDate(r.published_at)}</div>
