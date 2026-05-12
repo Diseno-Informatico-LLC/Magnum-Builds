@@ -16,9 +16,16 @@ Cada build exitoso publica una Release acá con tag `YYYY.MM.DD-buildN` y un ZIP
 
 ## Estructura de una Release
 
-- **Tag**: `2026.04.27-build42` (fecha + run number)
-- **Asset**: `MagnumAPI-2026.04.27-build42.zip`
+Hay **dos lineas de release** publicadas en este repo, distinguidas por el prefijo del tag:
+
+| Linea | Prefijo | Ejemplo de tag | Asset |
+|---|---|---|---|
+| API / Backend | _(sin prefijo)_ | `2026.04.27-build42` | `MagnumAPI-2026.04.27-build42.zip` |
+| Frontend | `frontend-` | `frontend-2026.04.27-build17` | `MagnumFrontend-2026.04.27-build17.zip` |
+
 - **Body**: commit, branch, trigger, target framework
+- `index.html` detecta el tipo con `tag.startsWith("frontend-")` para etiquetar visualmente.
+- `JobDescargarMagnumBuilds` corre diariamente en modo **incremental**: itera releases desc por `published_at` y, por cada linea (API/frontend), frena al toparse con una carpeta ya existente en disco. Nunca re-baja lo que el usuario haya borrado a proposito. Primera ejecucion de una linea: solo el latest, no toda la historia.
 
 ## GitHub Pages
 
