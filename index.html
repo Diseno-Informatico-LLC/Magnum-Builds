@@ -229,6 +229,52 @@
     }
     .type-badge.api { background: #1f6feb33; color: #58a6ff; }
     .type-badge.frontend { background: #a371f733; color: #bc8cff; }
+    .type-badge.updater { background: #2ea04333; color: #56d364; }
+    .history-header {
+      margin: 2.5rem 0 1rem;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .group {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: .75rem;
+      overflow: hidden;
+    }
+    .group > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: .75rem 1.25rem;
+      user-select: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      transition: background .15s;
+    }
+    .group > summary::-webkit-details-marker { display: none; }
+    .group > summary:hover { background: rgba(255,255,255,.03); }
+    .group[open] > summary { border-bottom: 1px solid var(--border); }
+    .group[open] > summary > .chevron { transform: rotate(90deg); }
+    .group-content { padding: 1rem 1rem .25rem; }
+    .group-year > summary { font-size: 1rem; }
+    .group-month { margin-bottom: .5rem; border-radius: 6px; }
+    .group-month > summary {
+      font-size: .9rem;
+      font-weight: 500;
+      padding: .55rem 1rem;
+      text-transform: capitalize;
+    }
+    .group .meta-count {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: .85rem;
+      margin-left: .35rem;
+    }
     footer {
       text-align: center;
       padding: 2rem 1.5rem;
@@ -298,7 +344,40 @@
     }
 
     function tipoRelease(r) {
-      return (r.tag_name || '').toLowerCase().startsWith('frontend-') ? 'frontend' : 'api';
+      const tag = (r.tag_name || '').toLowerCase();
+      if (tag.startsWith('frontend-')) return 'frontend';
+      if (tag.startsWith('updater-')) return 'updater';
+      return 'api';
+    }
+
+    const TIPO_LABEL = { api: 'API', frontend: 'Frontend', updater: 'Updater' };
+
+    function renderRelease(r, i, isLatest) {
+      const tipo = tipoRelease(r);
+      const assets = (r.assets || []).map(a =>
+        `<a class="asset" href="${a.browser_download_url}" download>
+          ⬇ ${escape(a.name)}
+          <span class="size">${fmtSize(a.size)}</span>
+        </a>`
+      ).join('');
+      const body = r.body ? `<div class="body" data-pending="1"></div>` : '';
+      return `
+        <details class="release" data-idx="${i}"${isLatest ? ' open' : ''}>
+          <summary>
+            <div class="release-header">
+              <div>
+                <span class="chevron">▶</span>
+                <h2>${escape(r.name || r.tag_name)}<span class="type-badge ${tipo}">${TIPO_LABEL[tipo]}</span>${isLatest ? '<span class="latest-badge">Latest</span>' : ''}</h2>
+                <span class="tag">${escape(r.tag_name)}</span>
+              </div>
+              <div class="meta">${fmtDate(r.published_at)}</div>
+            </div>
+          </summary>
+          <div class="release-content">
+            ${body}
+            <div class="assets">${assets || '<span class="meta">Sin archivos adjuntos.</span>'}</div>
+          </div>
+        </details>`;
     }
 
     function render(list) {
@@ -307,8 +386,7 @@
         return;
       }
 
-      // Mover el Latest de cada tipo al principio para que API y Frontend recientes
-      // queden adyacentes (la API de GitHub viene desc por published_at).
+      // Latest de cada tipo (API, Frontend, Updater) al principio, expandido.
       const seen = new Set();
       const latests = [];
       const rest = [];
@@ -320,35 +398,41 @@
       releases = [...latests, ...rest];
       const latestCount = latests.length;
 
-      $releases.innerHTML = releases.map((r, i) => {
-        const tipo = tipoRelease(r);
-        const tipoLabel = tipo === 'frontend' ? 'Frontend' : 'API';
-        const isLatest = i < latestCount;
-        const assets = (r.assets || []).map(a =>
-          `<a class="asset" href="${a.browser_download_url}" download>
-            ⬇ ${escape(a.name)}
-            <span class="size">${fmtSize(a.size)}</span>
-          </a>`
-        ).join('');
-        const body = r.body ? `<div class="body" data-pending="1"></div>` : '';
-        return `
-          <details class="release" data-idx="${i}"${isLatest ? ' open' : ''}>
-            <summary>
-              <div class="release-header">
-                <div>
-                  <span class="chevron">▶</span>
-                  <h2>${escape(r.name || r.tag_name)}<span class="type-badge ${tipo}">${tipoLabel}</span>${isLatest ? '<span class="latest-badge">Latest</span>' : ''}</h2>
-                  <span class="tag">${escape(r.tag_name)}</span>
-                </div>
-                <div class="meta">${fmtDate(r.published_at)}</div>
-              </div>
-            </summary>
-            <div class="release-content">
-              ${body}
-              <div class="assets">${assets || '<span class="meta">Sin archivos adjuntos.</span>'}</div>
-            </div>
+      const latestsHtml = releases
+        .slice(0, latestCount)
+        .map((r, i) => renderRelease(r, i, true))
+        .join('');
+
+      // Agrupar las viejas por año → mes, colapsadas.
+      const groups = {};
+      for (let i = latestCount; i < releases.length; i++) {
+        const d = new Date(releases[i].published_at);
+        const y = d.getFullYear();
+        const m = d.getMonth();
+        (groups[y] = groups[y] || {});
+        (groups[y][m] = groups[y][m] || []).push(i);
+      }
+
+      const years = Object.keys(groups).map(Number).sort((a, b) => b - a);
+      const oldHtml = years.map(y => {
+        const months = Object.keys(groups[y]).map(Number).sort((a, b) => b - a);
+        const yearCount = months.reduce((s, m) => s + groups[y][m].length, 0);
+        const monthsHtml = months.map(m => {
+          const monthName = new Date(y, m, 1).toLocaleDateString('es-AR', { month: 'long' });
+          const items = groups[y][m].map(i => renderRelease(releases[i], i, false)).join('');
+          return `<details class="group group-month">
+            <summary><span class="chevron">▶</span>${monthName}<span class="meta-count">(${groups[y][m].length})</span></summary>
+            <div class="group-content">${items}</div>
           </details>`;
+        }).join('');
+        return `<details class="group group-year">
+          <summary><span class="chevron">▶</span>${y}<span class="meta-count">(${yearCount})</span></summary>
+          <div class="group-content">${monthsHtml}</div>
+        </details>`;
       }).join('');
+
+      $releases.innerHTML = latestsHtml
+        + (oldHtml ? `<div class="history-header">Historial</div>${oldHtml}` : '');
 
       $releases.querySelectorAll('details.release').forEach(d => {
         if (d.open) hydrate(d);
