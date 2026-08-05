@@ -16,16 +16,17 @@ Cada build exitoso publica una Release acá con tag `YYYY.MM.DD-buildN` y un ZIP
 
 ## Estructura de una Release
 
-Hay **dos lineas de release** publicadas en este repo, distinguidas por el prefijo del tag:
+Hay **tres lineas de release** publicadas en este repo, distinguidas por el prefijo del tag:
 
 | Linea | Prefijo | Ejemplo de tag | Asset |
 |---|---|---|---|
 | API / Backend | _(sin prefijo)_ | `2026.04.27-build42` | `MagnumAPI-2026.04.27-build42.zip` |
 | Frontend | `frontend-` | `frontend-2026.04.27-build17` | `MagnumFrontend-2026.04.27-build17.zip` |
+| Desktop (.NET/WPF) | `desktop-` | `desktop-2026.08.05-build7` | `MagnumDesktop-2026.08.05-build7.zip` |
 
 - **Body**: commit, branch, trigger, target framework
-- `index.html` detecta el tipo con `tag.startsWith("frontend-")` para etiquetar visualmente.
-- `JobDescargarMagnumBuilds` corre diariamente en modo **incremental**: itera releases desc por `published_at` y, por cada linea (API/frontend), frena al toparse con una carpeta ya existente en disco. Nunca re-baja lo que el usuario haya borrado a proposito. Primera ejecucion de una linea: solo el latest, no toda la historia.
+- `index.html` detecta el tipo por prefijo del tag (`frontend-`, `updater-`, `desktop-`; sin prefijo = API) para etiquetar visualmente y mostrar el latest de cada linea.
+- `JobDescargarMagnumBuilds` corre diariamente en modo **incremental**: itera releases desc por `published_at` y, por cada linea (API/frontend), frena al toparse con una carpeta ya existente en disco. Nunca re-baja lo que el usuario haya borrado a proposito. Primera ejecucion de una linea: solo el latest, no toda la historia. La linea `desktop-` **no** la descarga (el desktop no esta en produccion); se distribuye solo desde la pagina.
 
 ## GitHub Pages
 
