@@ -45,20 +45,47 @@
     }
     header .site-link:hover { text-decoration: underline; }
     main {
-      max-width: 920px;
+      max-width: 1040px;
       margin: 2rem auto;
       padding: 0 1.5rem;
     }
+
+    /* ---- Tabs ---- */
+    .tabs {
+      display: flex;
+      gap: .4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.25rem;
+    }
+    .tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: .95rem;
+      padding: .6rem .9rem;
+      cursor: pointer;
+      margin-bottom: -1px;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active {
+      color: var(--text);
+      font-weight: 600;
+      border-bottom-color: #f78166;
+    }
+
+    /* ---- Controles ---- */
     .controls {
       display: flex;
       gap: .75rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       flex-wrap: wrap;
       align-items: center;
     }
     .controls input {
       flex: 1;
-      min-width: 200px;
+      min-width: 220px;
       padding: .5rem .75rem;
       background: var(--panel);
       border: 1px solid var(--border);
@@ -73,7 +100,86 @@
     .controls .count {
       color: var(--muted);
       font-size: .85rem;
+      white-space: nowrap;
     }
+    .chips { display: flex; gap: .35rem; flex-wrap: wrap; }
+    .chip {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--muted);
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      padding: .25rem .7rem;
+      cursor: pointer;
+    }
+    .chip:hover { border-color: var(--muted); }
+    .chip[aria-pressed="true"].api      { background: #1f6feb33; color: #58a6ff; border-color: #1f6feb66; }
+    .chip[aria-pressed="true"].frontend { background: #a371f733; color: #bc8cff; border-color: #a371f766; }
+    .chip[aria-pressed="true"].desktop  { background: #f0883e33; color: #f0883e; border-color: #f0883e66; }
+    .chip[aria-pressed="true"].updater  { background: #2ea04333; color: #56d364; border-color: #2ea04366; }
+    .hint {
+      color: var(--muted);
+      font-size: .85rem;
+      margin: 0 0 1.25rem;
+    }
+    .hint code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      background: rgba(110,118,129,.25);
+      padding: .1em .35em;
+      border-radius: 4px;
+    }
+
+    /* ---- Puntos de actualizacion ---- */
+    .punto {
+      display: grid;
+      grid-template-columns: 10.5rem 1fr;
+      gap: 1rem;
+      padding: .85rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .punto:last-child { border-bottom: none; }
+    .punto-fecha {
+      font-weight: 600;
+      font-size: .9rem;
+      text-transform: capitalize;
+    }
+    .punto-fecha small {
+      display: block;
+      font-weight: 400;
+      color: var(--muted);
+      font-size: .75rem;
+      text-transform: none;
+    }
+    .lineas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: .5rem;
+    }
+    .linea {
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .5rem .65rem;
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+    .linea.is-new { border-color: #2ea04366; background: #2ea04312; }
+    .linea.is-none { opacity: .45; }
+    .linea-top { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+    .linea-bot { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+    .linea .nota { color: var(--muted); font-size: .72rem; }
+    .linea.is-new .nota { color: #56d364; font-weight: 600; }
+    .punto-extra { grid-column: 1 / -1; }
+    @media (max-width: 640px) {
+      .punto { grid-template-columns: 1fr; gap: .5rem; }
+    }
+
+    /* ---- Release cards ---- */
     .release {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -91,9 +197,7 @@
     .release > summary::-webkit-details-marker { display: none; }
     .release > summary:hover { background: rgba(255,255,255,.03); }
     .release[open] > summary { border-bottom: 1px solid var(--border); }
-    .release-content {
-      padding: 1rem 1.5rem 1.25rem;
-    }
+    .release-content { padding: 1rem 1.5rem 1.25rem; }
     .release-header {
       display: flex;
       justify-content: space-between;
@@ -115,14 +219,8 @@
       width: 1rem;
     }
     .release[open] .chevron { transform: rotate(90deg); }
-    .release h2 {
-      margin: 0 0 .25rem;
-      font-size: 1.1rem;
-    }
-    .release h2 a {
-      color: var(--text);
-      text-decoration: none;
-    }
+    .release h2 { margin: 0 0 .25rem; font-size: 1.1rem; }
+    .release h2 a { color: var(--text); text-decoration: none; }
     .release h2 a:hover { color: var(--accent); }
     .tag {
       display: inline-block;
@@ -132,12 +230,10 @@
       border-radius: 99px;
       font-size: .75rem;
       font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      text-decoration: none;
     }
-    .meta {
-      color: var(--muted);
-      font-size: .85rem;
-      margin-bottom: .75rem;
-    }
+    a.tag:hover { text-decoration: underline; }
+    .meta { color: var(--muted); font-size: .85rem; margin-bottom: .75rem; }
     .body {
       color: var(--text);
       font-size: .9rem;
@@ -150,10 +246,7 @@
     }
     .body:empty { display: none; }
     .body p { margin: .5rem 0; }
-    .body h1, .body h2, .body h3, .body h4 {
-      margin: 1rem 0 .5rem;
-      font-weight: 600;
-    }
+    .body h1, .body h2, .body h3, .body h4 { margin: 1rem 0 .5rem; font-weight: 600; }
     .body h1 { font-size: 1.1rem; }
     .body h2 { font-size: 1.05rem; color: var(--accent); }
     .body h3 { font-size: .95rem; color: var(--accent); }
@@ -169,20 +262,11 @@
       padding: .1em .35em;
       border-radius: 4px;
     }
-    .body pre {
-      background: rgba(0,0,0,.35);
-      padding: .75rem;
-      border-radius: 6px;
-      overflow-x: auto;
-    }
+    .body pre { background: rgba(0,0,0,.35); padding: .75rem; border-radius: 6px; overflow-x: auto; }
     .body pre code { background: none; padding: 0; }
     .body strong { color: #e6edf3; }
     .body hr { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
-    .assets {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .5rem;
-    }
+    .assets { display: flex; flex-wrap: wrap; gap: .5rem; }
     .asset {
       display: inline-flex;
       align-items: center;
@@ -196,15 +280,9 @@
       transition: background .15s;
     }
     .asset:hover { background: var(--green-hover); }
-    .asset .size {
-      font-size: .75rem;
-      opacity: .85;
-    }
-    .empty, .loading, .error {
-      text-align: center;
-      padding: 3rem 1.5rem;
-      color: var(--muted);
-    }
+    .asset.sm { padding: .25rem .6rem; font-size: .78rem; }
+    .asset .size { font-size: .75rem; opacity: .85; }
+    .empty, .loading, .error { text-align: center; padding: 3rem 1.5rem; color: var(--muted); }
     .error { color: #f85149; }
     .latest-badge {
       background: #ffd33d33;
@@ -225,8 +303,8 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: .04em;
-      margin-left: .5rem;
     }
+    .release h2 .type-badge { margin-left: .5rem; }
     .type-badge.api { background: #1f6feb33; color: #58a6ff; }
     .type-badge.frontend { background: #a371f733; color: #bc8cff; }
     .type-badge.updater { background: #2ea04333; color: #56d364; }
@@ -270,12 +348,8 @@
       padding: .55rem 1rem;
       text-transform: capitalize;
     }
-    .group .meta-count {
-      color: var(--muted);
-      font-weight: 400;
-      font-size: .85rem;
-      margin-left: .35rem;
-    }
+    .group-month.puntos > .group-content { padding: 0; }
+    .group .meta-count { color: var(--muted); font-weight: 400; font-size: .85rem; margin-left: .35rem; }
     footer {
       text-align: center;
       padding: 2rem 1.5rem;
@@ -294,7 +368,7 @@
   </header>
 
   <main>
-    <div id="releases">
+    <div id="app">
       <div class="loading">Cargando releases…</div>
     </div>
   </main>
@@ -307,42 +381,39 @@
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.9/dist/purify.min.js"></script>
   <script>
     const REPO = 'Diseno-Informatico-LLC/Magnum-Builds';
-    const API = `https://api.github.com/repos/${REPO}/releases?per_page=100`;
-    const $releases = document.getElementById('releases');
+    const BASE = `https://api.github.com/repos/${REPO}/releases`;
+    const MAX_PAGES = 20;                       // 20 x 100 = 2000 releases de techo
+    const LINEAS = ['api', 'frontend', 'desktop'];
+    const TIPO_LABEL = { api: 'API', frontend: 'Frontend', updater: 'Updater', desktop: 'Desktop' };
+    const $app = document.getElementById('app');
 
     marked.setOptions({ gfm: true, breaks: true });
 
+    // ---------- utils ----------
     function fmtDate(iso) {
-      const d = new Date(iso);
-      return d.toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' });
+      return new Date(iso).toLocaleString('es-AR', { dateStyle: 'medium', timeStyle: 'short' });
     }
-
+    function fmtDia(d) {
+      return d.toLocaleDateString('es-AR', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+    function fmtDiaCorto(d) {
+      return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
     function fmtSize(bytes) {
       if (bytes < 1024) return bytes + ' B';
-      if (bytes < 1024**2) return (bytes/1024).toFixed(1) + ' KB';
-      if (bytes < 1024**3) return (bytes/1024/1024).toFixed(1) + ' MB';
-      return (bytes/1024/1024/1024).toFixed(2) + ' GB';
+      if (bytes < 1024 ** 2) return (bytes / 1024).toFixed(1) + ' KB';
+      if (bytes < 1024 ** 3) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+      return (bytes / 1024 / 1024 / 1024).toFixed(2) + ' GB';
     }
-
     function escape(s) {
-      return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+      return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
-
     function renderMarkdown(md) {
       if (!md) return '';
-      const html = marked.parse(md);
-      return DOMPurify.sanitize(html, { ADD_ATTR: ['target', 'rel'] });
+      return DOMPurify.sanitize(marked.parse(md), { ADD_ATTR: ['target', 'rel'] });
     }
-
-    let releases = [];
-
-    function hydrate(details) {
-      const body = details.querySelector('.body[data-pending]');
-      if (!body) return;
-      const idx = +details.dataset.idx;
-      body.innerHTML = renderMarkdown(releases[idx].body);
-      body.removeAttribute('data-pending');
-    }
+    // "12.06", "12/06/26", "2026-06-12" y "20260612" tienen que matchear todos.
+    function norm(s) { return String(s).toLowerCase().replace(/[\s./_-]/g, ''); }
 
     function tipoRelease(r) {
       const tag = (r.tag_name || '').toLowerCase();
@@ -351,25 +422,160 @@
       if (tag.startsWith('desktop-')) return 'desktop';
       return 'api';
     }
+    function diaKey(iso) {
+      const d = new Date(iso);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
 
-    const TIPO_LABEL = { api: 'API', frontend: 'Frontend', updater: 'Updater', desktop: 'Desktop' };
+    // ---------- estado ----------
+    let releases = [];   // todas, desc por published_at
+    let puntos = [];     // un punto por dia con releases, con la foto de cada linea vigente
+    let vista = 'puntos';
+    const tiposOn = new Set(['api', 'frontend', 'desktop', 'updater']);
+    let q = '';
 
-    function renderRelease(r, i, isLatest) {
+    // ---------- fetch paginado ----------
+    async function fetchTodas() {
+      const acc = [];
+      for (let page = 1; page <= MAX_PAGES; page++) {
+        const res = await fetch(`${BASE}?per_page=100&page=${page}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const batch = await res.json();
+        acc.push(...batch);
+        if (batch.length < 100) break;
+      }
+      return acc.sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
+    }
+
+    // Recorre la historia de vieja a nueva y saca, para cada dia con publicaciones,
+    // que version de cada linea quedaba vigente al cierre de ese dia.
+    function armarPuntos(list) {
+      const vigente = { api: null, frontend: null, desktop: null, updater: null };
+      const porDia = new Map();
+      [...list].reverse().forEach(r => {
+        const tipo = tipoRelease(r);
+        vigente[tipo] = r;
+        const key = diaKey(r.published_at);
+        let p = porDia.get(key);
+        if (!p) {
+          p = { key, fecha: new Date(r.published_at), cambio: new Set(), delDia: [], foto: null };
+          porDia.set(key, p);
+        }
+        p.cambio.add(tipo);
+        p.delDia.push(r.tag_name);
+        p.foto = { ...vigente };
+      });
+      return [...porDia.values()].reverse();
+    }
+
+    // ---------- filtros ----------
+    function matchRelease(r) {
+      if (!tiposOn.has(tipoRelease(r))) return false;
+      if (!q) return true;
+      // sumo dd/MM/yyyy y el mes largo para que "12/06" y "junio" funcionen
+      // igual que en la vista de puntos (fmtDate corto rinde "12 jun 2026")
+      const d = new Date(r.published_at);
+      const mes = d.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+      const hay = `${r.tag_name} ${r.name || ''} ${fmtDate(r.published_at)} ${fmtDiaCorto(d)} ${mes}`;
+      return hay.toLowerCase().includes(q) || norm(hay).includes(norm(q));
+    }
+    function matchPunto(p) {
+      if (!q) return true;
+      const vigentes = ['api', 'frontend', 'desktop', 'updater']
+        .map(t => (p.foto[t] ? p.foto[t].tag_name : '')).join(' ');
+      const mes = p.fecha.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+      // indexo tambien lo publicado ese dia, no solo lo vigente: si un build quedo
+      // pisado el mismo dia por otro igual tiene que encontrarse por su tag.
+      const hay = `${p.key} ${fmtDia(p.fecha)} ${mes} ${vigentes} ${p.delDia.join(' ')}`;
+      return hay.toLowerCase().includes(q) || norm(hay).includes(norm(q));
+    }
+
+    // ---------- render: puntos de actualizacion ----------
+    function renderLinea(tipo, rel, esNuevo) {
+      if (!rel) {
+        return `<div class="linea is-none">
+          <div class="linea-top"><span class="type-badge ${tipo}">${TIPO_LABEL[tipo]}</span></div>
+          <div class="linea-bot"><span class="nota">sin build a esta fecha</span></div>
+        </div>`;
+      }
+      const a = (rel.assets || [])[0];
+      const nota = esNuevo
+        ? 'actualizado este día'
+        : `vigente desde ${fmtDiaCorto(new Date(rel.published_at))}`;
+      const btn = a
+        ? `<a class="asset sm" href="${a.browser_download_url}" download>⬇ ZIP <span class="size">${fmtSize(a.size)}</span></a>`
+        : '<span class="nota">sin archivo adjunto</span>';
+      return `<div class="linea ${esNuevo ? 'is-new' : 'is-carry'}">
+        <div class="linea-top">
+          <span class="type-badge ${tipo}">${TIPO_LABEL[tipo]}</span>
+          <a class="tag" href="${rel.html_url}" target="_blank" rel="noopener">${escape(rel.tag_name)}</a>
+        </div>
+        <div class="linea-bot">${btn}<span class="nota">${nota}</span></div>
+      </div>`;
+    }
+
+    function renderPunto(p) {
+      const lineas = LINEAS.map(t => renderLinea(t, p.foto[t], p.cambio.has(t))).join('');
+      const upd = p.cambio.has('updater')
+        ? `<div class="punto-extra">${renderLinea('updater', p.foto.updater, true)}</div>`
+        : '';
+      const n = p.cambio.size;
+      return `<div class="punto" data-key="${p.key}">
+        <div class="punto-fecha">${fmtDia(p.fecha)}<small>${n} línea${n > 1 ? 's' : ''} actualizada${n > 1 ? 's' : ''}</small></div>
+        <div class="lineas">${lineas}${upd}</div>
+      </div>`;
+    }
+
+    function renderVistaPuntos() {
+      const list = puntos.filter(matchPunto);
+      if (!list.length) return '<div class="empty">Ningún punto coincide con la búsqueda.</div>';
+
+      const grupos = {};
+      list.forEach(p => {
+        const y = p.fecha.getFullYear(), m = p.fecha.getMonth();
+        (grupos[y] = grupos[y] || {});
+        (grupos[y][m] = grupos[y][m] || []).push(p);
+      });
+      const anios = Object.keys(grupos).map(Number).sort((a, b) => b - a);
+      let primero = true;
+      return anios.map((y, yi) => {
+        const meses = Object.keys(grupos[y]).map(Number).sort((a, b) => b - a);
+        const total = meses.reduce((s, m) => s + grupos[y][m].length, 0);
+        const mesesHtml = meses.map(m => {
+          const nombre = new Date(y, m, 1).toLocaleDateString('es-AR', { month: 'long' });
+          // con busqueda activa abro todo; sin busqueda, solo el mes mas reciente
+          const abierto = (q || primero) ? ' open' : '';
+          primero = false;
+          return `<details class="group group-month puntos"${abierto}>
+            <summary><span class="chevron">▶</span>${nombre}<span class="meta-count">(${grupos[y][m].length})</span></summary>
+            <div class="group-content">${grupos[y][m].map(renderPunto).join('')}</div>
+          </details>`;
+        }).join('');
+        return `<details class="group group-year"${(q || yi === 0) ? ' open' : ''}>
+          <summary><span class="chevron">▶</span>${y}<span class="meta-count">(${total})</span></summary>
+          <div class="group-content">${mesesHtml}</div>
+        </details>`;
+      }).join('');
+    }
+
+    // ---------- render: todas las releases ----------
+    function renderRelease(r, isLatest) {
       const tipo = tipoRelease(r);
+      const idx = releases.indexOf(r);
       const assets = (r.assets || []).map(a =>
         `<a class="asset" href="${a.browser_download_url}" download>
           ⬇ ${escape(a.name)}
           <span class="size">${fmtSize(a.size)}</span>
         </a>`
       ).join('');
-      const body = r.body ? `<div class="body" data-pending="1"></div>` : '';
+      const body = r.body ? '<div class="body" data-pending="1"></div>' : '';
       return `
-        <details class="release" data-idx="${i}"${isLatest ? ' open' : ''}>
+        <details class="release" data-idx="${idx}"${isLatest ? ' open' : ''}>
           <summary>
             <div class="release-header">
               <div>
                 <span class="chevron">▶</span>
-                <h2>${escape(r.name || r.tag_name)}<span class="type-badge ${tipo}">${TIPO_LABEL[tipo]}</span>${isLatest ? '<span class="latest-badge">Latest</span>' : ''}</h2>
+                <h2><a href="${r.html_url}" target="_blank" rel="noopener">${escape(r.name || r.tag_name)}</a><span class="type-badge ${tipo}">${TIPO_LABEL[tipo]}</span>${isLatest ? '<span class="latest-badge">Latest</span>' : ''}</h2>
                 <span class="tag">${escape(r.tag_name)}</span>
               </div>
               <div class="meta">${fmtDate(r.published_at)}</div>
@@ -382,74 +588,123 @@
         </details>`;
     }
 
-    function render(list) {
-      if (!list.length) {
-        $releases.innerHTML = '<div class="empty">No hay releases publicadas todavía.</div>';
-        return;
-      }
+    function renderVistaTodas() {
+      const list = releases.filter(matchRelease);
+      if (!list.length) return '<div class="empty">Ninguna release coincide con el filtro.</div>';
 
-      // Latest de cada tipo (API, Frontend, Updater) al principio, expandido.
-      const seen = new Set();
-      const latests = [];
-      const rest = [];
+      // el latest de cada linea (dentro del filtro) arriba y expandido
+      const vistos = new Set();
+      const latests = [], resto = [];
       list.forEach(r => {
         const t = tipoRelease(r);
-        if (!seen.has(t)) { seen.add(t); latests.push(r); }
-        else { rest.push(r); }
+        if (!vistos.has(t)) { vistos.add(t); latests.push(r); } else { resto.push(r); }
       });
-      releases = [...latests, ...rest];
-      const latestCount = latests.length;
 
-      const latestsHtml = releases
-        .slice(0, latestCount)
-        .map((r, i) => renderRelease(r, i, true))
-        .join('');
-
-      // Agrupar las viejas por año → mes, colapsadas.
-      const groups = {};
-      for (let i = latestCount; i < releases.length; i++) {
-        const d = new Date(releases[i].published_at);
-        const y = d.getFullYear();
-        const m = d.getMonth();
-        (groups[y] = groups[y] || {});
-        (groups[y][m] = groups[y][m] || []).push(i);
-      }
-
-      const years = Object.keys(groups).map(Number).sort((a, b) => b - a);
-      const oldHtml = years.map(y => {
-        const months = Object.keys(groups[y]).map(Number).sort((a, b) => b - a);
-        const yearCount = months.reduce((s, m) => s + groups[y][m].length, 0);
-        const monthsHtml = months.map(m => {
-          const monthName = new Date(y, m, 1).toLocaleDateString('es-AR', { month: 'long' });
-          const items = groups[y][m].map(i => renderRelease(releases[i], i, false)).join('');
-          return `<details class="group group-month">
-            <summary><span class="chevron">▶</span>${monthName}<span class="meta-count">(${groups[y][m].length})</span></summary>
-            <div class="group-content">${items}</div>
+      const grupos = {};
+      resto.forEach(r => {
+        const d = new Date(r.published_at);
+        const y = d.getFullYear(), m = d.getMonth();
+        (grupos[y] = grupos[y] || {});
+        (grupos[y][m] = grupos[y][m] || []).push(r);
+      });
+      const anios = Object.keys(grupos).map(Number).sort((a, b) => b - a);
+      const viejasHtml = anios.map(y => {
+        const meses = Object.keys(grupos[y]).map(Number).sort((a, b) => b - a);
+        const total = meses.reduce((s, m) => s + grupos[y][m].length, 0);
+        const mesesHtml = meses.map(m => {
+          const nombre = new Date(y, m, 1).toLocaleDateString('es-AR', { month: 'long' });
+          return `<details class="group group-month"${q ? ' open' : ''}>
+            <summary><span class="chevron">▶</span>${nombre}<span class="meta-count">(${grupos[y][m].length})</span></summary>
+            <div class="group-content">${grupos[y][m].map(r => renderRelease(r, false)).join('')}</div>
           </details>`;
         }).join('');
-        return `<details class="group group-year">
-          <summary><span class="chevron">▶</span>${y}<span class="meta-count">(${yearCount})</span></summary>
-          <div class="group-content">${monthsHtml}</div>
+        return `<details class="group group-year"${q ? ' open' : ''}>
+          <summary><span class="chevron">▶</span>${y}<span class="meta-count">(${total})</span></summary>
+          <div class="group-content">${mesesHtml}</div>
         </details>`;
       }).join('');
 
-      $releases.innerHTML = latestsHtml
-        + (oldHtml ? `<div class="history-header">Historial</div>${oldHtml}` : '');
+      return latests.map(r => renderRelease(r, true)).join('')
+        + (viejasHtml ? `<div class="history-header">Historial</div>${viejasHtml}` : '');
+    }
 
-      $releases.querySelectorAll('details.release').forEach(d => {
+    // ---------- shell ----------
+    function render(mantenerFoco) {
+      const esPuntos = vista === 'puntos';
+      const count = esPuntos
+        ? `${puntos.filter(matchPunto).length} de ${puntos.length} puntos`
+        : `${releases.filter(matchRelease).length} de ${releases.length} releases`;
+      const chips = esPuntos ? '' : `<div class="chips">${
+        ['api', 'frontend', 'desktop', 'updater'].map(t =>
+          `<button class="chip ${t}" data-tipo="${t}" aria-pressed="${tiposOn.has(t)}">${TIPO_LABEL[t]}</button>`
+        ).join('')}</div>`;
+      const hint = esPuntos
+        ? 'Cada fila es una fecha y muestra qué versión de <strong>API</strong>, <strong>Frontend</strong> y <strong>Desktop</strong> quedaba vigente ese día. Para dejar un cliente en un punto exacto, bajá los ZIP de esa misma fila: los recuadros en verde se publicaron ese día, los grises son los que seguían vigentes. Buscá por fecha (<code>12/06</code>) o por tag (<code>build105</code>).'
+        : 'Listado plano de todas las releases publicadas, con sus notas de build.';
+
+      $app.innerHTML = `
+        <div class="tabs">
+          <button class="tab ${esPuntos ? 'active' : ''}" data-vista="puntos">Puntos de actualización</button>
+          <button class="tab ${esPuntos ? '' : 'active'}" data-vista="todas">Todas las releases</button>
+        </div>
+        <div class="controls">
+          <input id="q" type="search" placeholder="Buscar por fecha o tag… (ej. 12/06, junio, build105)" value="${escape(q)}">
+          ${chips}
+          <span class="count">${count}</span>
+        </div>
+        <p class="hint">${hint}</p>
+        <div id="vista">${esPuntos ? renderVistaPuntos() : renderVistaTodas()}</div>`;
+
+      const $q = document.getElementById('q');
+      $q.addEventListener('input', debounce(e => {
+        q = e.target.value.trim().toLowerCase();
+        render(true);
+      }, 250));
+      if (mantenerFoco) {
+        $q.focus();
+        $q.setSelectionRange($q.value.length, $q.value.length);
+      }
+
+      $app.querySelectorAll('.tab').forEach(b =>
+        b.addEventListener('click', () => { vista = b.dataset.vista; render(); }));
+      $app.querySelectorAll('.chip').forEach(b =>
+        b.addEventListener('click', () => {
+          const t = b.dataset.tipo;
+          if (tiposOn.has(t)) tiposOn.delete(t); else tiposOn.add(t);
+          if (!tiposOn.size) tiposOn.add(t);   // nunca dejar todo apagado
+          render();
+        }));
+
+      $app.querySelectorAll('details.release').forEach(d => {
         if (d.open) hydrate(d);
         d.addEventListener('toggle', () => { if (d.open) hydrate(d); });
       });
     }
 
-    fetch(API)
-      .then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
+    function hydrate(details) {
+      const body = details.querySelector('.body[data-pending]');
+      if (!body) return;
+      body.innerHTML = renderMarkdown(releases[+details.dataset.idx].body);
+      body.removeAttribute('data-pending');
+    }
+
+    function debounce(fn, ms) {
+      let t;
+      return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+    }
+
+    fetchTodas()
+      .then(list => {
+        if (!list.length) {
+          $app.innerHTML = '<div class="empty">No hay releases publicadas todavía.</div>';
+          return;
+        }
+        releases = list;
+        puntos = armarPuntos(list);
+        render();
       })
-      .then(data => render(data))
       .catch(err => {
-        $releases.innerHTML = `<div class="error">Error cargando releases: ${escape(err.message)}<br><small>Si el repo es privado, la API requiere autenticación.</small></div>`;
+        $app.innerHTML = `<div class="error">Error cargando releases: ${escape(err.message)}<br><small>Si el repo es privado, la API requiere autenticación.</small></div>`;
       });
   </script>
 </body>

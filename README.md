@@ -26,6 +26,9 @@ Hay **tres lineas de release** publicadas en este repo, distinguidas por el pref
 
 - **Body**: commit, branch, trigger, target framework
 - `index.html` detecta el tipo por prefijo del tag (`frontend-`, `updater-`, `desktop-`; sin prefijo = API) para etiquetar visualmente y mostrar el latest de cada linea.
+- La pagina **pagina la API de GitHub** (`per_page=100` en bucle hasta agotar). Antes pedia una sola pagina y el historial quedaba cortado en la release numero 100, que es lo que escondia los frontends y desktops viejos.
+- Vista **Puntos de actualizacion** (la que abre por defecto): una fila por dia con publicaciones, mostrando que version de API / Frontend / Desktop quedaba **vigente al cierre de ese dia**. Sirve para dejar un cliente en un punto concreto sin tener que aparear tags a mano: los recuadros verdes se publicaron ese dia, los grises son los que seguian vigentes de antes. La busqueda normaliza separadores, asi que `12/06`, `12.06` y `20260612` matchean lo mismo, e indexa tanto lo vigente como lo publicado ese dia.
+- Vista **Todas las releases**: el listado plano de siempre, con filtro por linea y busqueda por fecha o tag.
 - `JobDescargarMagnumBuilds` corre diariamente en modo **incremental**: itera releases desc por `published_at` y, por cada linea (API/frontend), frena al toparse con una carpeta ya existente en disco. Nunca re-baja lo que el usuario haya borrado a proposito. Primera ejecucion de una linea: solo el latest, no toda la historia. La linea `desktop-` **no** la descarga (el desktop no esta en produccion); se distribuye solo desde la pagina.
 
 ## GitHub Pages
