@@ -498,7 +498,10 @@
           <div class="linea-bot"><span class="nota">sin build a esta fecha</span></div>
         </div>`;
       }
-      const a = (rel.assets || [])[0];
+      // El boton es el ZIP: el desktop publica tambien su manifiesto .json (379 B), que GitHub
+      // lista primero por orden alfabetico y dejaba el boton bajando el json.
+      const adj = rel.assets || [];
+      const a = adj.find(x => /\.zip$/i.test(x.name)) || adj[0];
       const nota = esNuevo
         ? 'actualizado este día'
         : `vigente desde ${fmtDiaCorto(new Date(rel.published_at))}`;
